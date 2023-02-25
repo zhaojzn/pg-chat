@@ -2,9 +2,10 @@ import React from 'react'
 import Add from '../img/add.png'
 import More from '../img/more.png'
 import Messages from './Messages'
+import Input from './Input'
 const Chat = () => {
   return (
-    <div className='flex-2 w-screen h-screen '>
+    <div className='flex-2 w-screen h-screen'>
         <div className="h-28 bg-gray-400 w-100 items-center flex justify-between p-10">
           <span> Jason Zhao </span>
           <div className="flex">
@@ -13,6 +14,7 @@ const Chat = () => {
           </div>
         </div>
         <Messages/>
+        <Input/>
     </div>
   )
 }
