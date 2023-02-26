@@ -2,7 +2,7 @@ import React from 'react'
 import Message from './Message'
 const Messages = () => {
   return (
-    <div>
+    <div className="h-5/6 bg-white ">
         <Message/>
         <Message/>
         <Message/>

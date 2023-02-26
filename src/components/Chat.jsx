@@ -5,7 +5,7 @@ import Messages from './Messages'
 import Input from './Input'
 const Chat = () => {
   return (
-    <div className='flex-2 w-screen h-screen'>
+    <div className='flex-2 w-screen h-screen flex-col flex'>
         <div className="h-28 bg-gray-400 w-100 items-center flex justify-between p-10">
           <span> Jason Zhao </span>
           <div className="flex">
