@@ -1,5 +1,5 @@
 
-const Register = () =>{
+const Login = () =>{
 
     return (
       <div className="h-screen bg-bg flex items-center justify-center">
@@ -16,5 +16,5 @@ const Register = () =>{
     )
   }
   
-  export default Register
+  export default Login
   
