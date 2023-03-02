@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 const Register = () =>{
 
   const [err,setErr] = useState(false)
+  let errMessage = ""
   const navigate = useNavigate()
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -21,7 +22,7 @@ const Register = () =>{
     
 
     if(!displayName || !email || !password || !file){
-      alert("Please fill in all the boxes")
+      console.log(errMessage)
     }
     try{
       const res = await createUserWithEmailAndPassword(auth, email, password)
@@ -44,6 +45,7 @@ const Register = () =>{
         }, 
         (error) => {
           setErr(true)
+          
         }, 
         () => {
           // Handle successful uploads on complete
@@ -68,7 +70,7 @@ const Register = () =>{
         }
       );
 
-    }catch(err){
+    }catch(z){
       setErr(true);
     }
     
@@ -78,16 +80,16 @@ const Register = () =>{
       <div className="h-4/5 w-1/2 bg-white rounded-lg flex flex-col items-center overflow-scroll">
         <span className="font-bold text-[#121212] p-10 text-4xl">PGSS Chat</span>
         <form onSubmit={handleSubmit} className="flex flex-col items-center pb-2 gap-[10px]">
-          <input required className="p-5 hover:border-b border-b-bg" type="text" placeholder="Username" />
+          <input className="p-5 hover:border-b border-b-bg" type="text" placeholder="Username" />
           <input required className="p-5 hover:border-b border-b-bg" type="email" placeholder="Email" />
           <input required className="p-5 hover:border-b border-b-bg" type="password" placeholder="Password" />
           <input style={{ display: "none" }} type="file" id="file" />
           <label htmlFor="file" className="flex items-center gap-[10px] text-xs cursor-pointer">
             <img src={Add} alt="" className="w-[32px]"/>
-            <span>Add an Testingavatar</span>
+            <span>Add an avatar</span>
           </label>
           <button className="bg-[#121212] text-white font-bold py-3 px-10 rounded-lg gap-y-24">Register</button>
-          {err && <span>Something went wrong</span>}
+          {err && <span>Something went wrong ({errMessage})</span>}
         </form>
         <span className="text-black pt-5 font-bold font text-1xl">Already registered? <a href="https://www.google.ca/" className="hover:text-gray-600">Login</a></span>
       </div>
