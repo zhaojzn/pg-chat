@@ -10,7 +10,7 @@ const Login = () =>{
             <input className="p-5 hover:border-b border-b-bg" type="password" placeholder="Password" />
           </form>
           <button className="bg-[#121212] text-white font-bold p-5 rounded-lg">Login</button>
-          <span className="text-black pt-5 font-bold font text-1xl">Dont have account? <a href="http://localhost:5173/" className="hover:text-gray-600">Register</a></span>
+          <span className="text-black pt-5 font-bold font text-1xl">Dont have account? <a href="/register" className="hover:text-gray-600">Register</a></span>
         </div>
       </div>
     )

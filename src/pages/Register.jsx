@@ -7,8 +7,10 @@ import Add from '../img/add.png'
 import { async } from "@firebase/util";
 import { doc, setDoc } from "firebase/firestore"; 
 import { useNavigate } from "react-router-dom";
-
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 const Register = () =>{
+
 
   const [err,setErr] = useState()
   const [fileState, setFileState] = useState()
@@ -29,14 +31,33 @@ const Register = () =>{
 
     if(!displayName || !email || !password || !file){
       setErr("Please fill all the fields")
+      toast.warn(err, {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        });
       return
     }
     try{
       const res = await createUserWithEmailAndPassword(auth, email, password)
       console.log("Created")
       const storageRef = ref(storage, displayName);
-      
       const uploadTask = uploadBytesResumable(storageRef, file);
+      toast.info('Photo is uploading.', {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        });
       uploadTask.on('state_changed', 
         (snapshot) => {
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -79,6 +100,16 @@ const Register = () =>{
 
     }catch(z){
       setErr(z.message);
+      toast.warn(err, {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        });
     }
     
   }
@@ -96,9 +127,9 @@ const Register = () =>{
             <span className='text-base'>{fileState ? 'Added avatar' : 'Add an avatar'}</span>
           </label>
           <button className="bg-[#121212] text-white font-bold py-3 px-10 rounded-lg gap-y-24">Register</button>
-          {err && <span>Err - ({err})</span>}
+          <ToastContainer/>
         </form>
-        <span className="text-black pt-5 font-bold font text-1xl">Already registered? <a href="https://www.google.ca/" className="hover:text-gray-600">Login</a></span>
+        <span className="text-black pt-5 font-bold font text-1xl">Already registered? <a href="/login" className="hover:text-gray-600">Login</a></span>
       </div>
     </div>
   )
