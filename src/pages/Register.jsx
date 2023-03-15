@@ -30,8 +30,7 @@ const Register = () =>{
     
 
     if(!displayName || !email || !password || !file){
-      setErr("Please fill all the fields")
-      toast.warn(err, {
+      toast.warn("Please fill all the fields" , {
         position: "top-center",
         autoClose: 1000,
         hideProgressBar: false,
@@ -99,8 +98,7 @@ const Register = () =>{
       );
 
     }catch(z){
-      setErr(z.message);
-      toast.warn(err, {
+      toast.warn(z.message, {
         position: "top-center",
         autoClose: 1000,
         hideProgressBar: false,
