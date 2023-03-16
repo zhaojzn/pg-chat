@@ -1,12 +1,29 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { ToastContainer, toast } from "react-toastify";
 import { db } from '../firebase'
+import { async } from '@firebase/util';
+import { AuthContext } from '../context/AuthContext';
 const Search = () => {
 
   const [search, setSearch] = useState("")
   const [user, setUser] = useState();
   const [err, setErr] = useState();
+
+  const currentUser = useContext(AuthContext).currentUser
+
+  const handleChat = async () =>{
+
+    // this makes it so it always the same id no matter what 
+    // ex : aw3r and r131a
+    // always: aw3rr131a
+
+    const combinedId =
+      currentUser.uid > user.uid
+        ? currentUser.uid + user.uid
+        : user.uid + currentUser.uid;
+    console.log(combinedId)
+  }
 
   const queryEvent = async () =>{
     const q = query(collection(db, "users"), where("displayName", "==", search));
@@ -45,8 +62,6 @@ const Search = () => {
     }
 
   }
-
-
   const handleKeyDown = (e) => {
     if(e.key == 'Enter'){
       queryEvent()
@@ -66,7 +81,7 @@ const Search = () => {
         </div>
         <ToastContainer/>
         {user && (
-            <div className='p-10 flex items-center gap-10 bg-gray-500 cursor-pointer border-b-8 border-b-bg'>
+            <div className='p-10 flex items-center gap-10 bg-gray-500 cursor-pointer border-b-8 border-b-bg' onClick={handleChat}>
               <img src={user.photoURL} className='w-12 h-12 rounded-full'></img>
               <div>
                  <span className='text-lg font-medium text-white '>{user.displayName}</span>
