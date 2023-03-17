@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, setDoc, doc, getDoc, updateDoc, serverTimestamp} from "firebase/firestore";
 import { ToastContainer, toast } from "react-toastify";
 import { db } from '../firebase'
 import { async } from '@firebase/util';
@@ -22,7 +22,39 @@ const Search = () => {
       currentUser.uid > user.uid
         ? currentUser.uid + user.uid
         : user.uid + currentUser.uid;
-    console.log(combinedId)
+
+    try{
+      
+      //create chats with combinedID
+      const res = await getDoc(doc(db, "chats", combinedId));
+      console.log(res)
+      if(!res.exists()){
+        await setDoc(doc(db, "chats", combinedId), {message: []})
+        console.log("Created")
+      }
+    } catch (e){
+      console.log(e)
+    }   
+
+    //update userChat for curernt user
+    await updateDoc(doc(db, "userChats", currentUser.uid), {
+      [combinedId + ".userInfo"]: {
+        uid: user.uid,
+        displayName: user.displayName,
+        photoURL: user.photoURL,
+      },
+      [combinedId + ".date"]: serverTimestamp(),
+    });
+
+    //update userChats for other user
+    await updateDoc(doc(db, "userChats", user.uid), {
+      [combinedId + ".userInfo"]: {
+        uid: currentUser.uid,
+        displayName: currentUser.displayName,
+        photoURL: currentUser.photoURL,
+      },
+      [combinedId + ".date"]: serverTimestamp(),
+    });
   }
 
   const queryEvent = async () =>{
