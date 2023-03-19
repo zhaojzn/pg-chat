@@ -9,6 +9,7 @@ import { doc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+//https://firebasestorage.googleapis.com/v0/b/react-firebase-23730.appspot.com/o/user.png?alt=media&token=37c243b8-12a9-4d99-bc05-a7723c6fdc33
 const Register = () =>{
 
 
@@ -16,8 +17,10 @@ const Register = () =>{
   const [fileState, setFileState] = useState()
   const navigate = useNavigate()
 
+
   const imageUplaod = (e) => {
     const file = e.target.files[0]
+    console.log(file)
     setFileState(file)
   }
 
@@ -26,8 +29,8 @@ const Register = () =>{
     const displayName = e.target[0].value
     const email = e.target[1].value
     const password = e.target[2].value
-    const file = e.target[3].files[0]
-    
+    let file = e.target[3].files[0]
+
 
     if(!displayName || !email || !password || !file){
       toast.warn("Please fill all the fields" , {
