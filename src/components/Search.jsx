@@ -17,44 +17,58 @@ const Search = () => {
     // this makes it so it always the same id no matter what 
     // ex : aw3r and r131a
     // always: aw3rr131a
-
     const combinedId =
       currentUser.uid > user.uid
         ? currentUser.uid + user.uid
         : user.uid + currentUser.uid;
-
-    try{
+    if(currentUser.uid != user.uid){
+      try{
       
-      //create chats with combinedID
-      const res = await getDoc(doc(db, "chats", combinedId));
-      console.log(res)
-      if(!res.exists()){
-        await setDoc(doc(db, "chats", combinedId), {message: []})
-        console.log("Created")
-      }
-    } catch (e){
-      console.log(e)
-    }   
+        //create chats with combinedID
+        const res = await getDoc(doc(db, "chats", combinedId));
+        console.log(res)
+        if(!res.exists()){
+          await setDoc(doc(db, "chats", combinedId), {message: []})
+          console.log("Created")
+        }
+      } catch (e){
+        console.log(e)
+      }   
+  
+      //update userChat for curernt user
+      await updateDoc(doc(db, "userChats", currentUser.uid), {
+        [combinedId + ".userInfo"]: {
+          uid: user.uid,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+        },
+        [combinedId + ".date"]: serverTimestamp(),
+      });
+  
+      //update userChats for other user
+      await updateDoc(doc(db, "userChats", user.uid), {
+        [combinedId + ".userInfo"]: {
+          uid: currentUser.uid,
+          displayName: currentUser.displayName,
+          photoURL: currentUser.photoURL,
+        },
+        [combinedId + ".date"]: serverTimestamp(),
+      });
+    }else{
+      toast.warn("You cannot start a convo with yourself", {
+        position: "top-center",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        });  
+    }
 
-    //update userChat for curernt user
-    await updateDoc(doc(db, "userChats", currentUser.uid), {
-      [combinedId + ".userInfo"]: {
-        uid: user.uid,
-        displayName: user.displayName,
-        photoURL: user.photoURL,
-      },
-      [combinedId + ".date"]: serverTimestamp(),
-    });
-
-    //update userChats for other user
-    await updateDoc(doc(db, "userChats", user.uid), {
-      [combinedId + ".userInfo"]: {
-        uid: currentUser.uid,
-        displayName: currentUser.displayName,
-        photoURL: currentUser.photoURL,
-      },
-      [combinedId + ".date"]: serverTimestamp(),
-    });
+    setUser(null)
+    setSearch("")
   }
 
   const queryEvent = async () =>{
@@ -109,6 +123,7 @@ const Search = () => {
             text-white outline-0 w-100" 
             onChange={e=>setSearch(e.target.value)}
             onKeyDown={handleKeyDown}
+            value={search}
             />
         </div>
         <ToastContainer/>
