@@ -3,25 +3,25 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { db } from '../firebase' 
 import { AuthContext } from '../context/AuthContext';
 import { ChatContext } from '../context/ChatContext';
-const Chats = (props) => {
-  const [chats,setChats] = useState([])
+const Chats = () => {
+  const [chats, setChats] = useState([]);
 
-  const  currentUser = useContext(AuthContext).currentUser
-  const { dispatch } = useContext(ChatContext)
-  useEffect(() =>{
+  const { currentUser } = useContext(AuthContext);
+  const { dispatch } = useContext(ChatContext);
+
+  useEffect(() => {
     const getChats = () => {
       const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
-        setChats(doc.data())
+        setChats(doc.data());
       });
-  
+
       return () => {
         unsub();
       };
-    }
-
+    };
 
     currentUser.uid && getChats();
-  }, [currentUser.uid])
+  }, [currentUser.uid]);
 
 
   const handleSelect = (u) => {
@@ -35,7 +35,7 @@ const Chats = (props) => {
   return (
     <div>
       {Object.entries(chats)?.map((chat) =>(
-        <div className='p-10 flex items-center gap-10 bg-gray-500 cursor-pointer hover:bg-gray-400' key={chat[0]} onClick={handleSelect(chat[1].userInfo)}>
+        <div className='p-10 flex items-center gap-10 bg-gray-500 cursor-pointer hover:bg-gray-400' key={chat[0]} onClick={() => handleSelect(chat[1].userInfo)}>
           <img src={chat[1].userInfo.photoURL} className='w-12 h-12 rounded-full'></img>
           <div>
               <span className='text-lg font-medium text-white '>{chat[1].userInfo.displayName}</span>
