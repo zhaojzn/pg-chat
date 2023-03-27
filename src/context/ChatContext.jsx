@@ -1,37 +1,40 @@
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../firebase";
-import { useState, useEffect, createContext, useContext, useReducer} from "react";
+import {
+  createContext,
+  useContext,
+  useReducer,
+} from "react";
 import { AuthContext } from "./AuthContext";
 
-
 export const ChatContext = createContext();
+
 export const ChatContextProvider = ({ children }) => {
-    const { currentUser }  = useContext(AuthContext)
-   const INITAL_STATE = {
-    chatID:"null",
-    user:{}
-   }
-   const chatReducer = (state, action) => {
-    switch(action.type){
-        case "CHANGE_USER":
-            return {
-                user:action.payload,
-                chatID:       
-                    currentUser.uid > action.payload.uid
-                    ? currentUser.uid + action.payload.uid
-                    : action.payload.uid + currentUser.uid
+  const { currentUser } = useContext(AuthContext);
+  const INITIAL_STATE = {
+    chatId: "null",
+    user: {},
+  };
 
-            }
-        default:
-            return state;
+  const chatReducer = (state, action) => {
+    switch (action.type) {
+      case "CHANGE_USER":
+        return {
+          user: action.payload,
+          chatId:
+            currentUser.uid > action.payload.uid
+              ? currentUser.uid + action.payload.uid
+              : action.payload.uid + currentUser.uid,
+        };
+
+      default:
+        return state;
     }
-   }
+  };
 
-   const [state,dispatch] = useReducer(chatReducer,INITAL_STATE);
+  const [state, dispatch] = useReducer(chatReducer, INITIAL_STATE);
 
-    return(
-        <ChatContext.Provider value={{data:state, dispatch}}>
-            {children}
-        </ChatContext.Provider>
-    );
-}
+  return (
+    <ChatContext.Provider value={{ data:state, dispatch }}>
+      {children}
+    </ChatContext.Provider>
+  );
+};
