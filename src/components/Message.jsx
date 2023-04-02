@@ -1,6 +1,14 @@
 import React from 'react'
+import { AuthContext } from '../context/AuthContext'
+import { ChatContext } from '../context/ChatContext'
 
-const Message = () => {
+const Message = ({message}) => {
+
+ const {currentUser} = userContext(AuthContext)
+ const {data} = userContext(ChatContext)
+
+
+  console.log(message)
   return (
     
     // <div className="bg-gray-300 flex gap-[20px]">
@@ -16,6 +24,7 @@ const Message = () => {
     // </div>
     
     //MESSAGE OWNER
+    
     <div className="bg-gray-300 flex gap-[20px] flex-row-reverse">
         <div className="flex flex-col mb-[20px]">
           <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/800px-Image_created_with_a_mobile_phone.png" className='w-[40px] h-[40px] rounded-full object-cover'></img>

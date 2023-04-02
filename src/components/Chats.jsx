@@ -39,7 +39,7 @@ const Chats = () => {
           <img src={chat[1].userInfo.photoURL} className='w-12 h-12 rounded-full'></img>
           <div>
               <span className='text-lg font-medium text-white '>{chat[1].userInfo.displayName}</span>
-              <p className='text-base text-gray-200'>{chat[1].userInfo.lastMessage?.text}</p>
+              <p className='text-base text-gray-200'>{chat[1].lastMessage?.text}</p>
           </div>
         </div>
       ))}
