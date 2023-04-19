@@ -38,7 +38,7 @@ const Login = () =>{
         <div className="h-3/5 w-1/2 bg-white rounded-lg flex flex-col items-center">
           <span className="font-bold text-[#121212] p-10 text-4xl">PGSS Chat</span>
           <form onSubmit={handleSumbit} className="flex flex-col items-center pb-2 gap-[10px]">
-            <input className="p-5 hover:border-b border-b-bg" type="text" placeholder="Username" />
+            <input className="p-5 hover:border-b border-b-bg" type="text" placeholder="Email" />
             <input className="p-5 hover:border-b border-b-bg" type="password" placeholder="Password" />
             <button className="bg-[#121212] text-white font-bold p-5 rounded-lg gap-y-24 ">Login</button>
             <ToastContainer/>

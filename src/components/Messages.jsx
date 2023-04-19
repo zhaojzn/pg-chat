@@ -11,20 +11,20 @@ const Messages = () => {
 
   useEffect(()=>{
     const unSub = onSnapshot(doc(db,"chats",data.chatId), (doc)=>{
-      doc.exists() && setMessages(doc.data())
+      doc.exists() && setMessages(doc.data().messages)
     })
-
+    
     return ()=>{
       unSub()
     }
-  }, [])
+  }, [data.chatId])
 
-  
+
   return (
     <div className="h-5/6 bg-gray-300 overflow-scroll">
-        {messages.map(m=>{
-          <Message message={m} key={m}/>
-        })}        
+      {messages.map((m) => (
+        <Message message={m} key={m.id} />
+      ))}      
     </div>
   )
 }
