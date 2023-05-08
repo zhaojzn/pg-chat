@@ -5,13 +5,14 @@ import { db } from '../firebase'
 import { async } from '@firebase/util';
 import { AuthContext } from '../context/AuthContext';
 import SearchBox from './SearchBox';
-const Search = () => {
+const Search = (props) => {
+
 
   const [chatState, setChatState] = useState(false)
   const handleChat = async () =>
   {
-    console.log(chatState);
     setChatState(!chatState);
+    props.onToggleSearch();
   }
 
   return (

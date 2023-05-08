@@ -2,11 +2,12 @@ import React from 'react'
 import Chats from './Chats'
 import Navbar from './Navbar'
 import Search from './Search'
-const Sidebar = () => {
+const Sidebar = (props) => {
+  
   return (
     <div className='flex-none w-1/4 h-screen bg-black'>
         <Navbar />
-        <Search/>
+        <Search onToggleSearch={props.onToggleSearch}/>
         <Chats/>
     </div>
   )
