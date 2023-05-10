@@ -17,10 +17,8 @@ const Search = (props) => {
 
   return (
     <div className='text-center'>
-      <button className="p-10 bg-transparent text-white outline-0 w-100 " onClick={handleChat}>Search</button>
-      {chatState && (
-        <SearchBox/>
-      )}
+      <button className="p-10 bg-transparent text-white outline-0 w-100 opacity-100" onClick={handleChat}>Search</button>
+
     </div>
   )
 

@@ -18,18 +18,24 @@ const Home = () => {
   if(!isSearchActive)
   {
     return (
-      <div className="h-screen bg-bg flex opacity-100">
-            <Sidebar onToggleSearch={handleSearchToggle}/>  
-            <Chat/>
-      </div>
+      <>
+        <div className="h-screen bg-bg flex opacity-100">
+              <Sidebar onToggleSearch={handleSearchToggle}/>  
+              <Chat/>
+        </div>
+      </>
     )
   }
   else{
     return (
-      <div className="h-screen bg-bg flex opacity-25">
-            <Sidebar onToggleSearch={handleSearchToggle}/>  
-            <Chat/>
-      </div>
+      <>
+        <div className="h-screen bg-bg flex opacity-10">
+              <Sidebar onToggleSearch={handleSearchToggle}/>  
+              <Chat/>
+        </div>
+        <SearchBox/>
+      </>
+
     )
   }
 }
