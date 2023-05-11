@@ -4,15 +4,45 @@ import { ToastContainer, toast } from "react-toastify";
 import { db } from '../firebase'
 import { async } from '@firebase/util';
 import { AuthContext } from '../context/AuthContext';
+import { useDebounce, useDebouncedCallback } from 'use-debounce';
   
 
 const SearchBox = () => {
 
 
-  const [search, setSearch] = useState("")
-  const handleKeyDown = (e) => {
-      console.log(search)
+
+  const [search, setSearch] = useState("");
+  const [user, setUser] = useState();
+  const [err, setErr] = useState();
+
+  const debounced = useDebouncedCallback((search) => {
+    setSearch(search);
+    handleApiCall(search)
+  }, 1000);
+
+  //handle 
+  const handleApiCall = async (search) =>{
+    console.log("debouced -" + search)
+    const q = query(collection(db, "users"), where("displayName", "==", search));
+    try{
+      const querySnapshot = await getDocs(q);
+      console.log(querySnapshot)
+      if(querySnapshot.docs.length > 0){
+        querySnapshot.forEach((doc) => {
+          setUser(doc.data())
+          console.log(doc.id, " => ", doc.data());
+        });
+      }else{
+          setUser("")
+      }
+
+    }catch (e){
+      console.log("Error")
+    }
+    console.log(user)
   }
+
+
 
   return (
     <div className='bg-black items-center justify-center w-1/2 h-3/4 absolute top-[10%] right-1/4 opacity-100'>
@@ -21,11 +51,18 @@ const SearchBox = () => {
             placeholder="Search username" 
             className="bg-transparent 
             text-white outline-0 w-100 text-center"
-            onChange={e=>setSearch(e.target.value)}
-            onKeyDown={handleKeyDown}
-            value={search} 
+            onChange={(e) => debounced(e.target.value)}
             />
         </div>
+        {user && Object.entries(user).map((m) => (
+          <div>
+            <div className='p-10 flex justify-center items-gap-10 bg-gray-500 cursor-pointer hover:bg-gray-400 rounded-full w-full' key={m}>
+            <span className='text-lg font-medium text-white '>{m}</span>
+
+            </div>
+          </div>
+        ))} 
+
     </div>
   )
 }
