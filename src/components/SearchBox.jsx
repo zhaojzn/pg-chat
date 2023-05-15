@@ -45,9 +45,14 @@ const SearchBox = () => {
     console.log(user);
   };
 
+  const handleClick = (e, data) =>{
+    
+    console.log("Test " + data)
+  }
+
 
   return (
-    <div className='bg-black items-center justify-center w-1/2 h-3/4 absolute top-[10%] right-1/4 opacity-100 overflow-scroll'>
+    <div className='bg-black items-center justify-center w-1/2 h-3/4 absolute top-[10%] right-1/4 opacity-100 overflow-scroll scrollbar-hide'>
         <div className='w-full h-[10%] bg-bg items-center flex justify-center'>
             <input type="text" 
             placeholder="Search username" 
@@ -58,7 +63,7 @@ const SearchBox = () => {
         </div>
           {user && user.map((u) => (
           <div key={u.displayName}>
-            <div className='p-10 flex justify-center items-gap-10 bg-gray-500 cursor-pointer hover:bg-gray-400 rounded-full w-full'>
+            <div className='p-10 flex justify-left items-gap-10 bg-black cursor-pointer hover:bg-gray-900 rounded-full w-full ' onClick={(e) => handleClick(e, u.displayName)}>
               <span className='text-lg font-medium text-white'>{u.displayName}</span>
             </div>
           </div>
