@@ -22,19 +22,17 @@ const SearchBox = () => {
 
   //handle 
   const handleApiCall = async (search) =>{
-    console.log("debouced -" + search)
     const q = query(collection(db, "users"), where("displayName", "==", search));
     try{
       const querySnapshot = await getDocs(q);
-      console.log(querySnapshot)
+      console.log("1" + "-  " + JSON.stringify(querySnapshot))
       if(querySnapshot.docs.length > 0){
-        querySnapshot.forEach((doc) => {
-          setUser(doc.data())
-          console.log(doc.id, " => ", doc.data());
-        });
+        setUser(querySnapshot)
       }else{
           setUser("")
       }
+
+    //snapshot each query
 
     }catch (e){
       console.log("Error")
@@ -57,7 +55,7 @@ const SearchBox = () => {
         {user && Object.entries(user).map((m) => (
           <div>
             <div className='p-10 flex justify-center items-gap-10 bg-gray-500 cursor-pointer hover:bg-gray-400 rounded-full w-full' key={m}>
-            <span className='text-lg font-medium text-white '>{m}</span>
+            <span className='text-lg font-medium text-white '></span>
 
             </div>
           </div>
