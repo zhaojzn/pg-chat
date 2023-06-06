@@ -79,11 +79,11 @@ const Input = () => {
         <input onKeyDown={handleKeyDown} onChange={e=>setText(e.target.value)} type="text" placeholder="Write Something..." className="w-3/4 h-12 rounded-full bg-bg2 p-5" value={text}></input>
         <div className='flex items-center gap-5'>
           <img src={Attach} alt="" className='h-8 cursor-pointer'/>
-          <input type="file" style={{display:"none"}} id="file" onChange={e=>setImg(e.target.files[0])}>  </input>
+          <input type="file" style={{display:"none"}} id="file" onChange={e=>setImg(e.target.files[0])}></input>
           <label htmlFor="file">
             <img src={Img} alt="" className='h-8 cursor-pointer'/>
           </label>
-          <button onClick={handleSend}className='p-[10px] pr-[20px] pl-[20px] text-white bg-gray-500 rounded-[25px]'></button>
+          <button onClick={handleSend}className='p-[10px] pr-[20px] pl-[20px] text-white bg-gray-500 rounded-[25px]'>Send</button>
         </div>
         </div>
 
