@@ -13,7 +13,7 @@ const Chat = () => {
 
   return (
     <div className='flex-2 w-screen h-screen flex-col flex'>
-        <div className="h-28 bg-gray-400 w-100 items-center flex justify-between p-10">
+        <div className="h-28 bg-white w-100 items-center flex justify-between p-10">
           <span> {data.user?.displayName} </span>
           <div className="flex">
             <img src={Add} alt="profile" className="w-12 h-12 rounded-full"></img>

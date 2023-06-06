@@ -19,7 +19,7 @@ const Home = () => {
   {
     return (
       <>
-        <div className="h-screen bg-bg flex opacity-100">
+        <div className="h-screen bg-bg flex opacity-100 ">
               <Sidebar onToggleSearch={handleSearchToggle}/>  
               <Chat/>
         </div>
@@ -29,11 +29,11 @@ const Home = () => {
   else{
     return (
       <>
-        <div className="h-screen bg-bg flex opacity-10">
+        <div className="h-screen bg-bg flex opacity-10 overflow-hidden">
               <Sidebar onToggleSearch={handleSearchToggle}/>  
               <Chat/>
         </div>
-        <SearchBox/>
+        <SearchBox onToggleSearch={handleSearchToggle}/>
       </>
 
     )

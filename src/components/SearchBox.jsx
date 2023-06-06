@@ -5,13 +5,16 @@ import { db } from '../firebase'
 import { async } from '@firebase/util';
 import { AuthContext } from '../context/AuthContext';
 import { useDebounce, useDebouncedCallback } from 'use-debounce';
+import { data } from 'autoprefixer';
   
 
-const SearchBox = () => {
+const SearchBox = (props) => {
 
   const [search, setSearch] = useState("");
   const [user, setUser] = useState([]);
   const [err, setErr] = useState();
+  const [userInfo, setUserInfo] = useState();
+  const currentUser = useContext(AuthContext).currentUser
 
   const debounced = useDebouncedCallback((search) => {
     setSearch(search);
@@ -45,10 +48,61 @@ const SearchBox = () => {
     console.log(user);
   };
 
-  const handleClick = (e, data) =>{
-    
-    console.log("Test " + data)
+
+
+  const APICall = async (data) => {
+    const q = query(collection(db, "users"), where("displayName", "==", data));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.docs.length > 0) {
+      return querySnapshot.docs.map((doc) => doc.data());
+    }
+    return []; // Return an empty array if no documents are found
   }
+  
+  const handleClick = async (e, data) => {
+    let user = await APICall(data)
+    const combinedId =
+      currentUser.uid > user[0].uid
+        ? currentUser.uid + user[0].uid
+        : user[0].uid + currentUser.uid;
+    console.log(combinedId)
+    if(currentUser.uid != user[0].uid){
+      try{
+      
+        //create chats with combinedID
+        const res = await getDoc(doc(db, "chats", combinedId));
+        console.log(res)
+        if(!res.exists()){
+          await setDoc(doc(db, "chats", combinedId), {messages: []})
+          console.log("Created")
+        }
+      } catch (e){
+        console.log(e)
+      }   
+  
+      //update userChat for curernt user
+      await updateDoc(doc(db, "userChats", currentUser.uid), {
+        [combinedId + ".userInfo"]: {
+          uid: user[0].uid,
+          displayName: user[0].displayName,
+          photoURL: user[0].photoURL,
+        },
+        [combinedId + ".date"]: serverTimestamp(),
+      });
+  
+      //update userChats for other user
+      await updateDoc(doc(db, "userChats", user[0].uid), {
+        [combinedId + ".userInfo"]: {
+          uid: currentUser.uid,
+          displayName: currentUser.displayName,
+          photoURL: currentUser.photoURL,
+        },
+        [combinedId + ".date"]: serverTimestamp(),
+      });
+    }
+      props.onToggleSearch();
+    }
+
 
 
   return (
@@ -73,4 +127,4 @@ const SearchBox = () => {
   )
 }
 
-export default SearchBox  
+export default SearchBox;

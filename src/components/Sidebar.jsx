@@ -7,7 +7,7 @@ const Sidebar = (props) => {
   console.log("TEST - " + JSON.stringify(props))
 
   return (
-    <div className='flex-none w-1/4 h-screen bg-black'>
+    <div className='flex-none w-4/12 h-screen bg-[#FDF9F8]'>
         <Navbar />  
         <Search onToggleSearch={props.onToggleSearch}/>
         <Chats/>

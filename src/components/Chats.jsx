@@ -36,11 +36,11 @@ const Chats = () => {
   return (
     <div className='flex flex-col items-center pb-2 gap-[10px]'>
       {Object.entries(chats)?.sort((a,b)=>b[1].date - a[1].date).map((chat) =>(
-        <div className='p-10 flex items-center gap-10 bg-gray-500 cursor-pointer hover:bg-gray-400 rounded-full w-full' key={chat[0]} onClick={() => handleSelect(chat[1].userInfo)}>
-          <img src={chat[1].userInfo.photoURL} className='w-12 h-12'></img>
+        <div className='p-10 flex items-center gap-10 bg-bg2 cursor-pointer hover:bg-gray-400 rounded-full w-full' key={chat[0]} onClick={() => handleSelect(chat[1].userInfo)}>
+          <img src={chat[1].userInfo.photoURL} className='w-12 h-12 rounded-full'></img>
           <div>
-              <span className='text-lg font-medium text-white '>{chat[1].userInfo.displayName}</span>
-              <p className='text-base text-gray-200'>{chat[1].lastMessage?.text}</p>
+              <span className='text-lg font-medium text-black '>{chat[1].userInfo.displayName}</span>
+              <p className='text-base text-black'>{chat[1].lastMessage?.text}</p>
           </div>
         </div>
       ))}

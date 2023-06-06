@@ -21,7 +21,7 @@ const Messages = () => {
 
 
   return (
-    <div className="h-5/6 bg-gray-300 overflow-y-scroll scrollbar-hide">
+    <div className="h-5/6 bg-white overflow-y-scroll scrollbar-hide">
       {messages.map((m) => (
         <Message message={m} key={m.id} />
       ))}      

@@ -15,7 +15,7 @@ const Message = ({message}) => {
 
   if(message.senderId === currentUser.uid){
     return(
-      <div className="bg-gray-300 flex gap-[20px] flex-row-reverse" ref={ref}>
+      <div className="bg-white flex gap-[20px] flex-row-reverse" ref={ref}>
         <div className="flex flex-col mb-[20px]">
           <img src={currentUser.photoURL} className='w-[40px] h-[40px] rounded-full object-cover'></img>
           <span>Just now</span>
@@ -29,7 +29,7 @@ const Message = ({message}) => {
   }
   return (
     
-    <div className="bg-gray-300 flex gap-[20px]" ref={ref}>
+    <div className="bg-white flex gap-[20px]" ref={ref}>
         <div className="flex flex-col mb-[20px]">
           <img src={data.user.photoURL} className='w-[40px] h-[40px] rounded-full object-cover'></img>
           <span>Just now</span>
