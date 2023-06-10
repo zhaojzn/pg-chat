@@ -1,22 +1,20 @@
-
-import { createUserWithEmailAndPassword,  updateProfile} from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
-import { auth,storage,db } from '../firebase'
+import { auth, storage, db } from '../firebase'
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import Add from '../img/add.png'
 import { async } from "@firebase/util";
-import { doc, setDoc } from "firebase/firestore"; 
+import { doc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-//https://firebasestorage.googleapis.com/v0/b/react-firebase-23730.appspot.com/o/user.png?alt=media&token=37c243b8-12a9-4d99-bc05-a7723c6fdc33
-const Register = () =>{
 
+const DEFAULT_IMAGE_URL = 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png'; // Replace with your default image URL
 
-  const [err,setErr] = useState()
+const Register = () => {
+  const [err, setErr] = useState()
   const [fileState, setFileState] = useState()
   const navigate = useNavigate()
-
 
   const imageUplaod = (e) => {
     const file = e.target.files[0]
@@ -25,15 +23,14 @@ const Register = () =>{
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    const displayName = e.target[0].value
-    const email = e.target[1].value
-    const password = e.target[2].value
-    let file = e.target[3].files[0]
-
-
-    if(!displayName || !email || !password || !file){
-      toast.warn("Please fill all the fields" , {
+    e.preventDefault();
+    const displayName = e.target[0].value;
+    const email = e.target[1].value;
+    const password = e.target[2].value;
+    const file = e.target[3].files[0];
+  
+    if (!displayName || !email || !password) {
+      toast.warn("Please fill all the fields", {
         position: "top-center",
         autoClose: 1000,
         hideProgressBar: false,
@@ -42,65 +39,92 @@ const Register = () =>{
         draggable: true,
         progress: undefined,
         theme: "dark",
-        });
-      return
+      });
+      return;
     }
-    try{
-      const res = await createUserWithEmailAndPassword(auth, email, password)
-      console.log("Created")
-      const storageRef = ref(storage, displayName);
-      const uploadTask = uploadBytesResumable(storageRef, file);
-      toast.info('Photo is uploading.', {
-        position: "top-center",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
+    if (file) {
+      const allowedTypes = ["image/png", "image/jpeg"];
+      if (!allowedTypes.includes(file.type)) {
+        toast.warn("Only PNG and JPEG files are allowed", {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
         });
-      uploadTask.on('state_changed', 
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log('Upload is ' + progress + '% done');
-          switch (snapshot.state) {
-            case 'paused':
-              console.log('Upload is paused');
-              break;
-            case 'running':
-              console.log('Upload is running');
-              break;
+        return;
+      }
+    }
+  
+    try {
+      const res = await createUserWithEmailAndPassword(auth, email, password);
+      console.log("Created");
+  
+      let downloadURL = DEFAULT_IMAGE_URL; // Default image URL
+  
+      if (file) {
+        const storageRef = ref(storage, `${displayName}/avatar`);
+        const metadata = {
+          contentType: file.type // Set the content type of the file
+        };
+        const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+        toast.info('Photo is uploading.', {
+          position: "top-center",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
+  
+        uploadTask.on('state_changed',
+          (snapshot) => {
+            // Progress and state change handling
+          },
+          (error) => {
+            setErr("Something went wrong");
+          },
+          () => {
+            // File upload complete
+            getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
+              downloadURL = url;
+              // Update user profile and Firestore documents
+              await updateProfile(res.user, {
+                displayName,
+                photoURL: downloadURL
+              });
+              await setDoc(doc(db, "users", res.user.uid), {
+                displayName,
+                email,
+                photoURL: downloadURL,
+                uid: res.user.uid
+              });
+              await setDoc(doc(db, "userChats", res.user.uid), {});
+              navigate("/");
+            });
           }
-        }, 
-        (error) => {
-          setErr("Something went wrong")
-          
-        }, 
-        () => {
-          // Handle successful uploads on complete
-          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          getDownloadURL(uploadTask.snapshot.ref).then(async(downloadURL) => {
-            await updateProfile(res.user,{
-              displayName,
-              photoURL: downloadURL
-            });
-            await setDoc(doc(db, "users", res.user.uid),{
-              displayName,
-              email,
-              photoURL: downloadURL,
-              uid: res.user.uid
-            });
-            await setDoc(doc(db, "userChats", res.user.uid),{
-
-            });
-            navigate("/");
-
-          });
-        }
-      );
-
-    }catch(z){
+        );
+      } else {
+        // No file selected, use the default image URL
+        await updateProfile(res.user, {
+          displayName,
+          photoURL: downloadURL
+        });
+        await setDoc(doc(db, "users", res.user.uid), {
+          displayName,
+          email,
+          photoURL: downloadURL,
+          uid: res.user.uid
+        });
+        await setDoc(doc(db, "userChats", res.user.uid), {});
+        navigate("/");
+      }
+    } catch (z) {
       toast.warn(z.message, {
         position: "top-center",
         autoClose: 1000,
@@ -110,11 +134,12 @@ const Register = () =>{
         draggable: true,
         progress: undefined,
         theme: "dark",
-        });
+      });
     }
-    
-  }
-  return (    
+  };
+  
+
+  return (
     <div className="h-screen bg-bg flex items-center justify-center ">
       <div className="h-4/5 w-1/2 bg-white rounded-lg flex flex-col items-center overflow-scroll">
         <span className="font-bold text-[#121212] p-10 text-4xl">PGSS Chat</span>
@@ -122,13 +147,13 @@ const Register = () =>{
           <input required className="p-5 hover:border-b border-b-bg" type="text" placeholder="Username" />
           <input required className="p-5 hover:border-b border-b-bg" type="email" placeholder="Email" />
           <input required className="p-5 hover:border-b border-b-bg" type="password" placeholder="Password" />
-          <input style={{ display: "none" }} type="file" id="file" onChange={imageUplaod}/>
+          <input style={{ display: "none" }} type="file" id="file" onChange={imageUplaod} />
           <label htmlFor="file" className="flex items-center gap-[10px] text-xs cursor-pointer">
-            <img src={Add} alt="" className="w-[32px]"/>
+            <img src={Add} alt="" className="w-[32px]" />
             <span className='text-base'>{fileState ? 'Added avatar' : 'Add an avatar'}</span>
           </label>
           <button className="bg-[#121212] text-white font-bold py-3 px-10 rounded-lg gap-y-24">Register</button>
-          <ToastContainer/>
+          <ToastContainer />
         </form>
         <span className="text-black pt-5 font-bold font text-1xl">Already registered? <a href="/login" className="hover:text-gray-600">Login</a></span>
       </div>

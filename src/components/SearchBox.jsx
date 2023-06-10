@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { collection, query, where, getDocs, setDoc, doc, getDoc, updateDoc, serverTimestamp} from "firebase/firestore";
 import { ToastContainer, toast } from "react-toastify";
 import { db } from '../firebase'
@@ -6,15 +6,29 @@ import { async } from '@firebase/util';
 import { AuthContext } from '../context/AuthContext';
 import { useDebounce, useDebouncedCallback } from 'use-debounce';
 import { data } from 'autoprefixer';
-  
 
 const SearchBox = (props) => {
+
+  useEffect(() => {
+    document.addEventListener("keydown", detectKeyDown, true);
+  },[])
+  const detectKeyDown = (e) => {
+    if (e.key === "Escape") {
+      props.onToggleSearch();
+    }
+  };
+
+
+
+  
+
 
   const [search, setSearch] = useState("");
   const [user, setUser] = useState([]);
   const [err, setErr] = useState();
   const [userInfo, setUserInfo] = useState();
   const currentUser = useContext(AuthContext).currentUser
+
 
   const debounced = useDebouncedCallback((search) => {
     setSearch(search);
@@ -106,24 +120,31 @@ const SearchBox = (props) => {
 
 
   return (
-    <div className='bg-black items-center justify-center w-1/2 h-3/4 absolute top-[10%] right-1/4 opacity-100 overflow-scroll scrollbar-hide'>
-        <div className='w-full h-[10%] bg-bg items-center flex justify-center'>
-            <input type="text" 
-            placeholder="Search username" 
-            className="bg-transparent 
-            text-white outline-0 w-100 text-center"
-            onChange={(e) => debounced(e.target.value)}
-            />
-        </div>
-          {user && user.map((u) => (
-          <div key={u.displayName}>
-            <div className='p-10 flex justify-left items-gap-10 bg-black cursor-pointer hover:bg-gray-900 rounded-full w-full ' onClick={(e) => handleClick(e, u.displayName)}>
-              <span className='text-lg font-medium text-white'>{u.displayName}</span>
-            </div>
+      <div className='bg-black items-center justify-center w-1/2 h-3/4 absolute top-[10%] right-1/4 opacity-100 overflow-scroll scrollbar-hide'>
+          <div className='w-full h-[10%] bg-bg items-center flex justify-center'>
+              <input type="text" 
+              placeholder="Search username" 
+              className="bg-transparent 
+              text-white outline-0 w-100 text-center"
+              onChange={(e) => debounced(e.target.value)}
+              />
           </div>
-        ))}
+            {user && user.map((u) => (
+            <div key={u.displayName}>
+              <div className='p-10 flex justify-left items-gap-10 bg-black cursor-pointer hover:bg-gray-900 rounded-full w-full ' onClick={(e) => handleClick(e, u.displayName)}>
+                
+                <div className='flex items-center gap-10'>
+                  <img className='rounded-full h-10 w-10' src={u.photoURL} alt="" />  
+                  <span className='text-lg font-medium text-white'>{u.displayName}</span>
+                
+                </div>
 
-    </div>
+              
+              </div>
+            </div>
+          ))}
+
+      </div>
   )
 }
 
